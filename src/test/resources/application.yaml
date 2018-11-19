@@ -1,0 +1,4 @@
+spring:
+    balancing-dataSources-config:
+        filtering:
+            type: ONLY_WORKING

@@ -23,9 +23,14 @@ public class BalancingDataSourceProperties {
     private Map<String, ExtendedDataSourceProperties> dataSources;
 
     /**
-     * Order of dataSources names (map keys) splitted by comma
+     * Order of dataSources names (map keys) splitted by a separator
      */
     private String dataSourcesOrder;
+
+    /**
+     * DataSourcesOrder string separator
+     */
+    private String dataSourcesOrderSeparator = ",";
 
     /**
      * Try to get a connection from the built balancing datasource after initialization
@@ -77,7 +82,7 @@ public class BalancingDataSourceProperties {
             throw new IllegalStateException("Property dataSourceOrder cannot be empty");
         }
 
-        String[] splittedDataSourcesOrder = dataSourcesOrder.split(",");
+        String[] splittedDataSourcesOrder = dataSourcesOrder.split(dataSourcesOrderSeparator);
         if (splittedDataSourcesOrder.length != dataSources.size()) {
             throw new IllegalStateException("Splitted size of property dataSourceOrder not equals to dataSources");
         }

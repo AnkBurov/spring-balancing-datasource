@@ -60,7 +60,9 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
 
                                     return new NamedFailAwareDataSource(dataSourceName, dataSource);
                                 }).collect(collectingAndThen(toList(), Collections::unmodifiableList));
-        validateConnectionAtStart();
+        if (properties.isValidateDataSourceAtStart()) {
+            validateConnectionAtStart();
+        }
     }
 
     @Override

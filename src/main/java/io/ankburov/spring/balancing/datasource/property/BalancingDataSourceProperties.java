@@ -27,6 +27,11 @@ public class BalancingDataSourceProperties {
      */
     private String dataSourcesOrder;
 
+    /**
+     * Try to get a connection from the built balancing datasource after initialization
+     */
+    private boolean validateDataSourceAtStart = true;
+
     @NestedConfigurationProperty
     private Balancing balancing = new Balancing();
 

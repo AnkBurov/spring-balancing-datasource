@@ -4,16 +4,19 @@ import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import io.ankburov.spring.balancing.datasource.BalancingDataSource
 import io.ankburov.spring.balancing.datasource.config.TestConfiguration
+import io.ankburov.spring.balancing.datasource.exception.NoAvailableDataSourcesException
 import io.ankburov.spring.balancing.datasource.integration.delegate.MariaDelegate
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.testcontainers.containers.JdbcDatabaseContainer
 
 import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertThrows
 import static org.junit.jupiter.api.Assertions.assertTrue
 
 @CompileStatic
@@ -42,6 +45,22 @@ class BalancingDataSourceTest {
         testDataSource()
     }
 
+    @Test
+    void testAllDataSourcesFailed() {
+        stopIfNotStopped(FIRST_MARIA, SECOND_MARIA)
+        assertThrows(NoAvailableDataSourcesException.class, new Executable() {
+            @Override
+            void execute() throws Throwable {
+                testDataSource()
+            }
+        })
+    }
+
+    @Test
+    void testThatOrderOfDataSourcesWillBePreserved() {
+        assertTrue(balancingDataSourceProperties.getDataSources() instanceof LinkedHashMap)
+    }
+
     private void testDataSource() {
         for (int i = 0; i < 100; i++) {
             new Sql(balancingDataSource.getConnection()).withCloseable { sql ->
@@ -50,11 +69,6 @@ class BalancingDataSourceTest {
                 assertEquals(1, resultSet["res"])
             }
         }
-    }
-
-    @Test
-    void testThatOrderOfDataSourcesWillBePreserved() {
-        assertTrue(balancingDataSourceProperties.getDataSources() instanceof LinkedHashMap)
     }
 
     private static void startIfNotStarted(JdbcDatabaseContainer... containers) {

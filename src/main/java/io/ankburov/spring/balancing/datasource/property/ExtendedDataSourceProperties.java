@@ -11,5 +11,8 @@ import java.util.Map;
 @Setter
 public class ExtendedDataSourceProperties extends DataSourceProperties {
 
+    /**
+     * Any additional datasource properties
+     */
     private Map<String, String> additionalProperties = new LinkedHashMap<>();
 }

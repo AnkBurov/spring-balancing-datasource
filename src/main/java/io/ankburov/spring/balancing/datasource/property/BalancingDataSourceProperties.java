@@ -20,6 +20,9 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "spring.balancing-dataSources-config")
 public class BalancingDataSourceProperties {
 
+    /**
+     * Map of balancing datasources
+     */
     private Map<String, ExtendedDataSourceProperties> dataSources;
 
     /**
@@ -50,8 +53,14 @@ public class BalancingDataSourceProperties {
     @Setter
     public static class Balancing {
 
+        /**
+         * Balancing type - sequential STANDBY or load-balancing RANDOM distribution
+         */
         private BalancingType type = BalancingType.STANDBY;
 
+        /**
+         * Do not create the balancing datasource bean if true
+         */
         private boolean overrideBalancingDataSource = false;
     }
 
@@ -69,6 +78,9 @@ public class BalancingDataSourceProperties {
     @Setter
     public static class Filtering {
 
+        /**
+         * Filtering type - how to filter out previously failed datasources
+         */
         private FilteringType type = FilteringType.ALL;
 
         /**
@@ -77,6 +89,9 @@ public class BalancingDataSourceProperties {
         private Duration timeThreshold = Duration.ofMinutes(1);
     }
 
+    /**
+     * Make sure that the datasource order is desirable
+     */
     public void makeSureDataSourceOrder() {
         if (StringUtils.isEmpty(dataSourcesOrder)) {
             throw new IllegalStateException("Property dataSourceOrder cannot be empty");

@@ -42,6 +42,7 @@ class BalancingDataSourceTest {
     @Test
     void testOneFailedDataSourceAndConnectionIsAvailable() {
         stopIfNotStopped(FIRST_MARIA) // explicitly break one of datasources
+        startIfNotStarted(SECOND_MARIA)
         testDataSource()
     }
 

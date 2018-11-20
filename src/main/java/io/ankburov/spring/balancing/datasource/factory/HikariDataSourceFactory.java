@@ -3,10 +3,12 @@ package io.ankburov.spring.balancing.datasource.factory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.ankburov.spring.balancing.datasource.property.ExtendedDataSourceProperties;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
+@Slf4j
 public class HikariDataSourceFactory implements DataSourceFactory {
 
     @Override
@@ -28,6 +30,7 @@ public class HikariDataSourceFactory implements DataSourceFactory {
         }
 
         dataSourceProperties.getAdditionalProperties().forEach(properties::put);
+        log.info("Datasource properties are {}", properties.toString());
 
         HikariConfig hikariConfig = new HikariConfig(properties);
         return new HikariDataSource(hikariConfig);

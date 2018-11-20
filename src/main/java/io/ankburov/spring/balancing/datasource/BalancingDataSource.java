@@ -59,7 +59,10 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
                                     DataSource dataSource = dataSourceFactory.create(dataSourceProps);
 
                                     return new NamedFailAwareDataSource(dataSourceName, dataSource);
-                                }).collect(collectingAndThen(toList(), Collections::unmodifiableList));
+                                })
+                                .peek(dataSource -> log.info("Datasource with id {} of {} type is created",
+                                        dataSource.getName(), dataSource.getDataSource().getClass().getCanonicalName()))
+                                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
         if (properties.isValidateDataSourceAtStart()) {
             validateConnectionAtStart();
         }
@@ -75,7 +78,7 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
         return getBalancedConnection(datasource -> datasource.getConnection(s, s1));
     }
 
-    private Connection getBalancedConnection(SqlFunction<DataSource, Connection> connectionProducer) throws SQLException { //todo add check on start
+    private Connection getBalancedConnection(SqlFunction<DataSource, Connection> connectionProducer) throws SQLException {
         val filteredDataSources = filteringStrategy.filter(dataSources);
         val balancingDataSources = balancingStrategy.apply(filteredDataSources);
 

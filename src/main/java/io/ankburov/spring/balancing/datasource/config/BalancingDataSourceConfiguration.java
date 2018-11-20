@@ -14,6 +14,7 @@ import io.ankburov.spring.balancing.datasource.filter.UseAllFilteringStrategy;
 import io.ankburov.spring.balancing.datasource.log.FailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.log.TimedFailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,40 +27,47 @@ import javax.sql.DataSource;
 public class BalancingDataSourceConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "FAILOVER", matchIfMissing = true)
     public BalancingStrategy failoverBalancingStrategy() {
         return new FailOverBalancingStrategy();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "RANDOM")
     public BalancingStrategy randomBalancingStrategy() {
         return new RandomBalancingStrategy();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ALL")
     public FilteringStrategy useAllFilteringStrategy() {
         return new UseAllFilteringStrategy();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ONLY_WORKING")
     public FilteringStrategy onlyWorkingFilteringStrategy(BalancingDataSourceProperties properties) {
         return new OnlyWorkingFilteringStrategy(properties.getFiltering().getTimeThreshold());
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public FailedDataSourceLogStrategy timedFailedDataSourceLogStrategy(BalancingDataSourceProperties properties) {
         return new TimedFailedDataSourceLogStrategy(properties.getLogging().getTimeThreshold());
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public UpdateFailedDataSourceStrategy alwaysUpdateFailedDataSourceStrategy() {
         return new AlwaysUpdateFailedDataSourceStrategy();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public DataSourceFactory hikariDataSourceFactory() {
         return new HikariDataSourceFactory();
     }

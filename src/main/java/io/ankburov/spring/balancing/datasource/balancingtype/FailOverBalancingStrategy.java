@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * Strategy preserves the order of datasources
  */
-public class StandbyBalancingStrategy extends AbstractBalancingStrategy {
+public class FailOverBalancingStrategy extends AbstractBalancingStrategy {
 
     @Override
     protected List<NamedFailAwareDataSource> applyInternal(List<NamedFailAwareDataSource> dataSources) {

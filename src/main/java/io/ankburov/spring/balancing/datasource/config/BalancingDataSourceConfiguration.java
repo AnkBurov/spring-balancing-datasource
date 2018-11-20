@@ -3,7 +3,7 @@ package io.ankburov.spring.balancing.datasource.config;
 import io.ankburov.spring.balancing.datasource.BalancingDataSource;
 import io.ankburov.spring.balancing.datasource.balancingtype.BalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.RandomBalancingStrategy;
-import io.ankburov.spring.balancing.datasource.balancingtype.StandbyBalancingStrategy;
+import io.ankburov.spring.balancing.datasource.balancingtype.FailOverBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.factory.DataSourceFactory;
 import io.ankburov.spring.balancing.datasource.factory.HikariDataSourceFactory;
 import io.ankburov.spring.balancing.datasource.failed.AlwaysUpdateFailedDataSourceStrategy;
@@ -26,9 +26,9 @@ import javax.sql.DataSource;
 public class BalancingDataSourceConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "STANDBY", matchIfMissing = true)
-    public BalancingStrategy standbyBalancingStrategy() {
-        return new StandbyBalancingStrategy();
+    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "FAILOVER", matchIfMissing = true)
+    public BalancingStrategy failoverBalancingStrategy() {
+        return new FailOverBalancingStrategy();
     }
 
     @Bean

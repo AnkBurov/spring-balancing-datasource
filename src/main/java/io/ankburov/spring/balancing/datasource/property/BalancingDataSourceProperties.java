@@ -54,9 +54,9 @@ public class BalancingDataSourceProperties {
     public static class Balancing {
 
         /**
-         * Balancing type - sequential STANDBY or load-balancing RANDOM distribution
+         * Balancing type - sequential FAILOVER or load-balancing RANDOM distribution
          */
-        private BalancingType type = BalancingType.STANDBY;
+        private BalancingType type = BalancingType.FAILOVER;
 
         /**
          * Do not create the balancing datasource bean if true

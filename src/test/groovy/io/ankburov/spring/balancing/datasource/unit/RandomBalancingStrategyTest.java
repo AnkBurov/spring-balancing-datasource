@@ -3,14 +3,14 @@ package io.ankburov.spring.balancing.datasource.unit;
 import io.ankburov.spring.balancing.datasource.balancingtype.BalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.RandomBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.model.NamedFailAwareDataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RandomBalancingStrategyTest {
 

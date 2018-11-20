@@ -2,11 +2,11 @@ package io.ankburov.spring.balancing.datasource.unit;
 
 import io.ankburov.spring.balancing.datasource.failed.AlwaysUpdateFailedDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.model.NamedFailAwareDataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AlwaysUpdateFailedDataSourceStrategyTest {
 

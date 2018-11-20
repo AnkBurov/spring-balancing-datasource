@@ -10,6 +10,7 @@ import io.ankburov.spring.balancing.datasource.model.NamedFailAwareDataSource;
 import io.ankburov.spring.balancing.datasource.model.SqlFunction;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.InitializingBean;
@@ -60,6 +61,7 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
 
                                     return new NamedFailAwareDataSource(dataSourceName, dataSource);
                                 }).collect(collectingAndThen(toList(), Collections::unmodifiableList));
+        validateConnectionAtStart();
     }
 
     @Override
@@ -88,5 +90,14 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
         }
 
         throw new NoAvailableDataSourcesException();
+    }
+
+    /**
+     * Validate that at least one underlying datasource is working
+     */
+    @SneakyThrows
+    private void validateConnectionAtStart() {
+        try (Connection c = getConnection()) {
+        }
     }
 }

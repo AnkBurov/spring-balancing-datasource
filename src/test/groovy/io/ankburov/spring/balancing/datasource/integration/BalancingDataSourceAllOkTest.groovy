@@ -5,18 +5,17 @@ import groovy.transform.CompileStatic
 import io.ankburov.spring.balancing.datasource.BalancingDataSource
 import io.ankburov.spring.balancing.datasource.config.TestConfiguration
 import io.ankburov.spring.balancing.datasource.integration.delegate.MariaDelegate
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.testcontainers.containers.JdbcDatabaseContainer
 
-import java.sql.Connection
+import static org.junit.jupiter.api.Assertions.assertEquals
 
 @CompileStatic
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestConfiguration.class)
 class BalancingDataSourceAllOkTest {
 
@@ -28,11 +27,11 @@ class BalancingDataSourceAllOkTest {
     @Test
     void testAllDataSourcesAvailable() {
         for (int i = 0; i < 100; i++) {
-            Connection connection = balancingDataSource.getConnection()
-            def result = new Sql(connection).execute("select 1")
-            Assert.assertTrue(result)
-            connection.close()
+            new Sql(balancingDataSource.getConnection()).withCloseable { sql ->
+                def resultSet = sql.firstRow("select 1 as res")
+                assertEquals(1, resultSet.size())
+                assertEquals(1, resultSet["res"])
+            }
         }
-        println ""
     }
 }

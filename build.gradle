@@ -3,13 +3,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-//        classpath "org.junit.platform:junit-platform-gradle-plugin:1.0.3"
+        classpath "org.junit.platform:junit-platform-gradle-plugin:1.2.0"
     }
 }
 
 apply plugin: "java"
 apply plugin: "groovy"
-//apply plugin: "org.junit.platform.gradle.plugin"
+apply plugin: "org.junit.platform.gradle.plugin"
 
 
 group 'io.ankburov'
@@ -19,6 +19,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -27,16 +28,11 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-jdbc:1.5.17.RELEASE",
             "com.zaxxer:HikariCP:3.2.0"
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-
     testCompile "org.springframework.boot:spring-boot-starter-test:1.5.17.RELEASE",
                 "org.codehaus.groovy:groovy-all:2.5.4",
                 "org.testcontainers:mariadb:1.10.1",
-                "org.mariadb.jdbc:mariadb-java-client:2.3.0"/*,
-                "org.junit.jupiter:junit-jupiter-api:5.3.0",
-                "org.junit.jupiter:junit-jupiter-engine:5.3.0",
-                "com.github.sbrannen:spring-test-junit5:1.0.3"*/
-
-
-    //compile group: 'org.mariadb.jdbc:mariadb-java-client:2.3.0'
+                "org.mariadb.jdbc:mariadb-java-client:2.3.0",
+                "org.junit.jupiter:junit-jupiter-api:5.3.1",
+                "org.junit.jupiter:junit-jupiter-engine:5.3.1",
+                "com.github.sbrannen:spring-test-junit5:1.3.1"
 }

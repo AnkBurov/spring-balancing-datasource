@@ -25,6 +25,9 @@ class MariaDelegate {
         System.setProperty("spring.balancing-dataSources-config.dataSources.${name}.url", maria.jdbcUrl)
         System.setProperty("spring.balancing-dataSources-config.dataSources.${name}.driver-class-name", maria.jdbcDriverInstance.class.canonicalName)
 
+        String currentOrder = System.getProperty("spring.balancing-dataSources-config.dataSourcesOrder")
+        String theNewOrder = currentOrder == null ? name : "$currentOrder,$name"
+        System.setProperty("spring.balancing-dataSources-config.dataSourcesOrder", theNewOrder)
         return maria
     }
 }

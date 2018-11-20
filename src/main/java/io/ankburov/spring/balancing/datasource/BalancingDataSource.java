@@ -26,9 +26,6 @@ import java.util.List;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-/**
- * todo linkedmap properties test
- */
 @Slf4j
 @RequiredArgsConstructor
 public class BalancingDataSource extends AbstractDataSource implements InitializingBean {
@@ -52,7 +49,9 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
         if (CollectionUtils.isEmpty(properties.getDataSources())) {
             throw new IllegalStateException("Balancing datasources list cannot be empty");
         }
-        dataSources = properties.getDataSources().entrySet().stream()
+        // make sure that the order of datasources is desirable
+        properties.makeSureDataSourceOrder();
+        dataSources = properties.getDataSources().entrySet().stream().sequential()
                                 .peek(entry -> log.info("Creating datasource with id {}", entry.getKey()))
                                 .map(entry -> {
                                     val dataSourceName = entry.getKey();

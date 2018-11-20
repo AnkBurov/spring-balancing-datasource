@@ -75,39 +75,4 @@ public class BalancingDataSourceConfiguration {
         return new BalancingDataSource(dataSourceFactory, properties, filteringStrategy, balancingStrategy,
                                        failedDataSourceLogStrategy, updateFailedDataSourceStrategy);
     }
-
-    /*@Configuration
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config", value = "balancingType", havingValue = "STANDBY")
-    public static class StandbyBalancingConfiguration {
-
-        @Bean
-        public BalancingStrategy balancingStrategy() {
-            return new StandbyBalancingStrategy();
-        }
-
-    }*/
-
-    /*@Configuration
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config", value = "balancingType", havingValue = "RANDOM")
-    public static class RandomBalancingConfiguration {
-
-        @Bean
-        public BalancingStrategy balancingStrategy() {
-            return new RandomBalancingStrategy();
-        }
-
-    }*/
-
-    /*@Configuration
-    @Import({StandbyBalancingConfiguration.class})
-    @EnableConfigurationProperties(BalancingDataSourceProperties.class)
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config", value = "overrideBalancingDataSource", havingValue = "false")
-    public static class DataSourceConfiguration {
-
-        @Bean("dataSource")
-        public DataSource dataSource(BalancingDataSourceProperties properties,
-                                     BalancingStrategy balancingStrategy) {
-            return new BalancingDataSource(properties, balancingStrategy);
-        }
-    }*/
 }

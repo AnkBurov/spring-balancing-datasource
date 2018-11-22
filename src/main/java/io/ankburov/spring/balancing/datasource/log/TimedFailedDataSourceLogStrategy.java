@@ -21,9 +21,9 @@ public class TimedFailedDataSourceLogStrategy implements FailedDataSourceLogStra
     @Override
     public void log(NamedFailAwareDataSource failedDataSource, Exception e) {
         if (failedDataSource.hasFailedOldEnoughOrOk(logToWarnDuration)) {
-            log.warn(LOG_MESSAGE, e);
+            log.warn(LOG_MESSAGE, failedDataSource.getName(), e);
         } else {
-            log.debug(LOG_MESSAGE, e);
+            log.debug(LOG_MESSAGE, failedDataSource.getName(), e);
         }
     }
 }

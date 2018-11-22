@@ -14,7 +14,9 @@ public class HikariDataSourceFactory implements DataSourceFactory {
     @Override
     public DataSource create(ExtendedDataSourceProperties dataSourceProperties) {
         Properties properties = new Properties();
-        properties.put("jdbcUrl", dataSourceProperties.determineUrl());
+        if (dataSourceProperties.getUrl() != null) {
+            properties.put("jdbcUrl", dataSourceProperties.determineUrl()); // NPE-dangerous method
+        }
         properties.put("username", dataSourceProperties.determineUsername());
         properties.put("password", dataSourceProperties.determinePassword());
         properties.put("poolName", dataSourceProperties.getName());

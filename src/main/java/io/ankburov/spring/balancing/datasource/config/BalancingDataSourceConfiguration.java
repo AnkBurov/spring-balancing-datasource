@@ -49,7 +49,7 @@ public class BalancingDataSourceConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ONLY_WORKING")
+    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ONLY_WORKING", matchIfMissing = true)
     public FilteringStrategy onlyWorkingFilteringStrategy(BalancingDataSourceProperties properties) {
         return new OnlyWorkingFilteringStrategy(properties.getFiltering().getTimeThreshold());
     }

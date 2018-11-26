@@ -7,6 +7,7 @@ import io.ankburov.spring.balancing.datasource.config.TestConfiguration
 import io.ankburov.spring.balancing.datasource.exception.NoAvailableDataSourcesException
 import io.ankburov.spring.balancing.datasource.integration.delegate.MariaDelegate
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.function.Executable
@@ -33,10 +34,21 @@ class BalancingDataSourceTest {
     @Autowired
     private BalancingDataSourceProperties balancingDataSourceProperties
 
+    @BeforeAll
+    static void beforeClass() {
+        System.setProperty("spring.balancing-dataSources-config.dataSources.ignore_data_source.url", "IGNORE")
+    }
+
     @Test
     void testAllDataSourcesAvailable() {
         startIfNotStarted(FIRST_MARIA, SECOND_MARIA)
         testDataSource()
+    }
+
+    @Test
+    void testDataSourcesSize() {
+        startIfNotStarted(FIRST_MARIA, SECOND_MARIA)
+        assertEquals(2, balancingDataSource.getDataSources().size())
     }
 
     @Test

@@ -11,6 +11,8 @@ import io.ankburov.spring.balancing.datasource.failed.UpdateFailedDataSourceStra
 import io.ankburov.spring.balancing.datasource.filter.FilteringStrategy;
 import io.ankburov.spring.balancing.datasource.filter.OnlyWorkingFilteringStrategy;
 import io.ankburov.spring.balancing.datasource.filter.UseAllFilteringStrategy;
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceByUrlStrategy;
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.log.FailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.log.TimedFailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
@@ -25,6 +27,12 @@ import javax.sql.DataSource;
 @Configuration
 @EnableConfigurationProperties(BalancingDataSourceProperties.class)
 public class BalancingDataSourceConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IgnoreDataSourceStrategy ignoreDataSourceByUrlStrategy() {
+        return new IgnoreDataSourceByUrlStrategy();
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -74,13 +82,14 @@ public class BalancingDataSourceConfiguration {
 
     @Bean("dataSource")
     @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "overrideBalancingDataSource", havingValue = "false", matchIfMissing = true)
-    public DataSource dataSource(BalancingDataSourceProperties properties,
+    public DataSource dataSource(IgnoreDataSourceStrategy ignoreDataSourceStrategy,
+                                 BalancingDataSourceProperties properties,
                                  DataSourceFactory dataSourceFactory,
                                  FilteringStrategy filteringStrategy,
                                  BalancingStrategy balancingStrategy,
                                  FailedDataSourceLogStrategy failedDataSourceLogStrategy,
                                  UpdateFailedDataSourceStrategy updateFailedDataSourceStrategy) {
-        return new BalancingDataSource(dataSourceFactory, properties, filteringStrategy, balancingStrategy,
+        return new BalancingDataSource(ignoreDataSourceStrategy, dataSourceFactory, properties, filteringStrategy, balancingStrategy,
                                        failedDataSourceLogStrategy, updateFailedDataSourceStrategy);
     }
 }

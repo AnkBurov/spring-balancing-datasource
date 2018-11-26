@@ -1,5 +1,7 @@
 package io.ankburov.spring.balancing.datasource.unit;
 
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceByUrlStrategy;
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
 import io.ankburov.spring.balancing.datasource.property.ExtendedDataSourceProperties;
 import lombok.val;
@@ -12,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BalancingDataSourcePropertiesTest {
 
+    private static final IgnoreDataSourceStrategy IGNORE_STRATEGY = new IgnoreDataSourceByUrlStrategy();
+
     @Test
     void testOrderCorrect() {
         BalancingDataSourceProperties properties = new BalancingDataSourceProperties();
@@ -20,7 +24,7 @@ public class BalancingDataSourcePropertiesTest {
         properties.getDataSources().put("first", new ExtendedDataSourceProperties());
         properties.setDataSourcesOrder("first, second");
 
-        properties.makeSureDataSourceOrder();
+        properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
 
         val iterator = properties.getDataSources().keySet().iterator();
         properties.getDataSources().entrySet();
@@ -36,7 +40,7 @@ public class BalancingDataSourcePropertiesTest {
             properties.getDataSources().put("second", new ExtendedDataSourceProperties());
             properties.getDataSources().put("first", new ExtendedDataSourceProperties());
 
-            properties.makeSureDataSourceOrder();
+            properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
         });
     }
 
@@ -49,7 +53,7 @@ public class BalancingDataSourcePropertiesTest {
             properties.getDataSources().put("first", new ExtendedDataSourceProperties());
             properties.setDataSourcesOrder("first");
 
-            properties.makeSureDataSourceOrder();
+            properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
         });
     }
 
@@ -62,7 +66,29 @@ public class BalancingDataSourcePropertiesTest {
             properties.getDataSources().put("first", new ExtendedDataSourceProperties());
             properties.setDataSourcesOrder("whatever, and again");
 
-            properties.makeSureDataSourceOrder();
+            properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
         });
+    }
+
+    @Test
+    void testIgnoredDataSources() {
+        BalancingDataSourceProperties properties = new BalancingDataSourceProperties();
+        properties.setDataSources(new LinkedHashMap<>());
+        properties.getDataSources().put("second", new ExtendedDataSourceProperties());
+
+        properties.getDataSources().put("first", new ExtendedDataSourceProperties());
+        ExtendedDataSourceProperties ignoreDataSourceProperties = new ExtendedDataSourceProperties();
+        ignoreDataSourceProperties.setUrl("IGNORE");
+        properties.getDataSources().put("ignore_datasource", ignoreDataSourceProperties);
+
+        properties.setDataSourcesOrder("first, second");
+
+        properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
+
+        val iterator = properties.getDataSources().keySet().iterator();
+        properties.getDataSources().entrySet();
+        assertEquals("first", iterator.next());
+        assertEquals("second", iterator.next());
+        assertEquals("ignore_datasource", iterator.next());
     }
 }

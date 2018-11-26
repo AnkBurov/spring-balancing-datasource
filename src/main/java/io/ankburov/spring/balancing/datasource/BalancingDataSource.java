@@ -5,10 +5,12 @@ import io.ankburov.spring.balancing.datasource.exception.NoAvailableDataSourcesE
 import io.ankburov.spring.balancing.datasource.factory.DataSourceFactory;
 import io.ankburov.spring.balancing.datasource.failed.UpdateFailedDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.filter.FilteringStrategy;
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.log.FailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.model.NamedFailAwareDataSource;
 import io.ankburov.spring.balancing.datasource.model.SqlFunction;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,8 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class BalancingDataSource extends AbstractDataSource implements InitializingBean {
 
+    private final IgnoreDataSourceStrategy ignoreDataSourceStrategy;
+
     private final DataSourceFactory dataSourceFactory;
 
     private final BalancingDataSourceProperties properties;
@@ -42,6 +46,7 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
 
     private final UpdateFailedDataSourceStrategy updateFailedDataSourceStrategy;
 
+    @Getter
     private List<NamedFailAwareDataSource> dataSources;
 
     @Override
@@ -50,8 +55,9 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
             throw new IllegalStateException("Balancing datasources list cannot be empty");
         }
         // make sure that the order of datasources is desirable
-        properties.makeSureDataSourceOrder();
+        properties.makeSureDataSourceOrder(ignoreDataSourceStrategy);
         dataSources = properties.getDataSources().entrySet().stream().sequential()
+                                .filter(entry -> !ignoreDataSourceStrategy.ignore(entry.getValue()))
                                 .peek(entry -> log.info("Creating datasource with id {}", entry.getKey()))
                                 .map(entry -> {
                                     val dataSourceName = entry.getKey();

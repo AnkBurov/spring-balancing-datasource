@@ -1,9 +1,11 @@
 package io.ankburov.spring.balancing.datasource.property;
 
+import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.model.BalancingType;
 import io.ankburov.spring.balancing.datasource.model.FilteringType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.util.StringUtils;
@@ -92,13 +94,14 @@ public class BalancingDataSourceProperties {
     /**
      * Make sure that the datasource order is desirable
      */
-    public void makeSureDataSourceOrder() {
+    public void makeSureDataSourceOrder(IgnoreDataSourceStrategy ignoreDataSourceStrategy) {
         if (StringUtils.isEmpty(dataSourcesOrder)) {
             throw new IllegalStateException("Property dataSourceOrder cannot be empty");
         }
+        val notIgnoredDataSources = ignoreDataSourceStrategy.filterNotIgnored(dataSources);
 
         String[] splittedDataSourcesOrder = dataSourcesOrder.split(dataSourcesOrderSeparator);
-        if (splittedDataSourcesOrder.length != dataSources.size()) {
+        if (splittedDataSourcesOrder.length != notIgnoredDataSources.size()) {
             throw new IllegalStateException("Splitted size of property dataSourceOrder not equals to dataSources");
         }
 
@@ -112,6 +115,9 @@ public class BalancingDataSourceProperties {
                     }
                     orderedDataSources.put(dataSourceName, dataSources.get(dataSourceName));
                 });
+
+        // add ignored datasources
+        orderedDataSources.putAll(ignoreDataSourceStrategy.filterIgnored(dataSources));
 
         if (orderedDataSources.size() != dataSources.size()) {
             throw new IllegalStateException("Ordered dataSources size not equals not initial dataSources size");

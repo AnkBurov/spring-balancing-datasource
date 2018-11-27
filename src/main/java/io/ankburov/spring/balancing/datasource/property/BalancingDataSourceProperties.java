@@ -19,23 +19,23 @@ import java.util.Map;
 @Getter
 @Setter
 @Validated
-@ConfigurationProperties(prefix = "spring.balancing-dataSources-config")
+@ConfigurationProperties(prefix = "spring.balancing-config")
 public class BalancingDataSourceProperties {
 
     /**
      * Map of balancing datasources
      */
-    private Map<String, ExtendedDataSourceProperties> dataSources;
+    private Map<String, ExtendedDataSourceProperties> datasources;
 
     /**
-     * Order of dataSources names (map keys) splitted by a separator
+     * Order of datasources names (map keys) splitted by a separator
      */
-    private String dataSourcesOrder;
+    private String order;
 
     /**
      * DataSourcesOrder string separator
      */
-    private String dataSourcesOrderSeparator = ",";
+    private String orderSeparator = ",";
 
     /**
      * Try to get a connection from the built balancing datasource after initialization
@@ -95,14 +95,14 @@ public class BalancingDataSourceProperties {
      * Make sure that the datasource order is desirable
      */
     public void makeSureDataSourceOrder(IgnoreDataSourceStrategy ignoreDataSourceStrategy) {
-        if (StringUtils.isEmpty(dataSourcesOrder)) {
+        if (StringUtils.isEmpty(order)) {
             throw new IllegalStateException("Property dataSourceOrder cannot be empty");
         }
-        val notIgnoredDataSources = ignoreDataSourceStrategy.filterNotIgnored(dataSources);
+        val notIgnoredDataSources = ignoreDataSourceStrategy.filterNotIgnored(datasources);
 
-        String[] splittedDataSourcesOrder = dataSourcesOrder.split(dataSourcesOrderSeparator);
+        String[] splittedDataSourcesOrder = order.split(orderSeparator);
         if (splittedDataSourcesOrder.length != notIgnoredDataSources.size()) {
-            throw new IllegalStateException("Splitted size of property dataSourceOrder not equals to dataSources");
+            throw new IllegalStateException("Splitted size of property dataSourceOrder not equals to datasources");
         }
 
         Map<String, ExtendedDataSourceProperties> orderedDataSources = new LinkedHashMap<>();
@@ -110,18 +110,18 @@ public class BalancingDataSourceProperties {
         Arrays.stream(splittedDataSourcesOrder).sequential()
                 .map(String::trim)
                 .forEachOrdered((String dataSourceName) -> {
-                    if (!dataSources.containsKey(dataSourceName)) {
+                    if (!datasources.containsKey(dataSourceName)) {
                         throw new IllegalStateException(String.format(dataSourceNotFound, dataSourceName));
                     }
-                    orderedDataSources.put(dataSourceName, dataSources.get(dataSourceName));
+                    orderedDataSources.put(dataSourceName, datasources.get(dataSourceName));
                 });
 
         // add ignored datasources
-        orderedDataSources.putAll(ignoreDataSourceStrategy.filterIgnored(dataSources));
+        orderedDataSources.putAll(ignoreDataSourceStrategy.filterIgnored(datasources));
 
-        if (orderedDataSources.size() != dataSources.size()) {
-            throw new IllegalStateException("Ordered dataSources size not equals not initial dataSources size");
+        if (orderedDataSources.size() != datasources.size()) {
+            throw new IllegalStateException("Ordered datasources size not equals not initial datasources size");
         }
-        dataSources = orderedDataSources;
+        datasources = orderedDataSources;
     }
 }

@@ -36,28 +36,28 @@ public class BalancingDataSourceConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "FAILOVER", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "type", havingValue = "FAILOVER", matchIfMissing = true)
     public BalancingStrategy failoverBalancingStrategy() {
         return new FailOverBalancingStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "type", havingValue = "RANDOM")
+    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "type", havingValue = "RANDOM")
     public BalancingStrategy randomBalancingStrategy() {
         return new RandomBalancingStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ALL")
+    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ALL")
     public FilteringStrategy useAllFilteringStrategy() {
         return new UseAllFilteringStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.filtering", value = "type", havingValue = "ONLY_WORKING", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ONLY_WORKING", matchIfMissing = true)
     public FilteringStrategy onlyWorkingFilteringStrategy(BalancingDataSourceProperties properties) {
         return new OnlyWorkingFilteringStrategy(properties.getFiltering().getTimeThreshold());
     }
@@ -81,7 +81,7 @@ public class BalancingDataSourceConfiguration {
     }
 
     @Bean("dataSource")
-    @ConditionalOnProperty(prefix = "spring.balancing-dataSources-config.balancing", value = "overrideBalancingDataSource", havingValue = "false", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "overrideBalancingDataSource", havingValue = "false", matchIfMissing = true)
     public DataSource dataSource(IgnoreDataSourceStrategy ignoreDataSourceStrategy,
                                  BalancingDataSourceProperties properties,
                                  DataSourceFactory dataSourceFactory,

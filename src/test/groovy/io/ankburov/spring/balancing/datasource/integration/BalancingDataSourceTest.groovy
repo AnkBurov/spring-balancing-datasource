@@ -40,7 +40,7 @@ class BalancingDataSourceTest {
 
     @BeforeAll
     static void beforeClass() {
-        System.setProperty("spring.balancing-dataSources-config.dataSources.ignore_data_source.url", "IGNORE")
+        System.setProperty("spring.balancing-config.datasources.ignore_data_source.url", "IGNORE")
     }
 
     @Test
@@ -75,7 +75,7 @@ class BalancingDataSourceTest {
 
     @Test
     void testThatOrderOfDataSourcesWillBePreserved() {
-        assertTrue(balancingDataSourceProperties.getDataSources() instanceof LinkedHashMap)
+        assertTrue(balancingDataSourceProperties.getDatasources() instanceof LinkedHashMap)
     }
 
     private void testDataSource() {

@@ -51,12 +51,12 @@ public class BalancingDataSource extends AbstractDataSource implements Initializ
 
     @Override
     public void afterPropertiesSet() {
-        if (CollectionUtils.isEmpty(properties.getDataSources())) {
+        if (CollectionUtils.isEmpty(properties.getDatasources())) {
             throw new IllegalStateException("Balancing datasources list cannot be empty");
         }
         // make sure that the order of datasources is desirable
         properties.makeSureDataSourceOrder(ignoreDataSourceStrategy);
-        dataSources = properties.getDataSources().entrySet().stream().sequential()
+        dataSources = properties.getDatasources().entrySet().stream().sequential()
                                 .filter(entry -> !ignoreDataSourceStrategy.ignore(entry.getValue()))
                                 .peek(entry -> log.info("Creating datasource with id {}", entry.getKey()))
                                 .map(entry -> {

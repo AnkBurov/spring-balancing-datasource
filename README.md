@@ -7,7 +7,7 @@ Gives functionality like MariaDB's`jdbc:mysql:replication//.....`
 or Oracle's `jdbc:oracle:thin:@(DESCRIPTION = (FAILOVER=on)` to any databases and datasources
 without messing with the availability definition of each database vendor. 
 
-Balancing datasources are defined as system properties under `spring.balancing-dataSources-config`
+Balancing datasources are defined as system properties under `spring.balancing-config`
 property section. 
 
 By default each declared datasource is created as HikariCP datasource. If different
@@ -42,8 +42,8 @@ or in generated `spring-configuration-metadata.json`
 `application.yaml` example:
 ```yaml
 spring:
-    balancing-dataSources-config:
-        data-sources:
+    balancing-config:
+        datasources:
             main_oracle:
                 url: jdbc:oracle:thin:@localhost:1521:xe
                 username: system
@@ -54,7 +54,7 @@ spring:
                 username: system
                 password: oracle
                 name: jdbc-adapter-local-test
-        data-sources-order: "main_oracle,standby_oracle"
+        order: "main_oracle,standby_oracle"
 ```
 After that all JDBC connections from `dataSource` bean with an implementation as `BalancingDataSource` will be balanced across 
 defined datasources according to used `BalancingStrategy` - in failover manner or load-balancing one. 
@@ -69,8 +69,8 @@ many). To overcome this datasources can be ignored. It means that they will be i
 To do that, url property of ignoring datasources should have value `IGNORE`:
 ```yaml
 spring:
-    balancing-dataSources-config:
-        data-sources:
+    balancing-config:
+        datasources:
             main_oracle:
                 url: jdbc:oracle:thin:@localhost:1521:xe
                 username: system
@@ -78,6 +78,6 @@ spring:
                 name: main_oracle
             ignored_datasource:
                 url: IGNORE
-        data-sources-order: "main_oracle"
+        order: "main_oracle"
 ```
 With such configuration only one instance of `javax.sql.DataSource` with the name `main_oracle` will be created

@@ -1,5 +1,6 @@
 # Spring-balancing-datasource
-[![](https://jitpack.io/v/AnkBurov/spring-balancing-datasource.svg)](https://jitpack.io/#AnkBurov/spring-balancing-datasource)
+[ ![Download](https://api.bintray.com/packages/ankburov/maven/spring-balancing-datasource/images/download.svg) ](https://bintray.com/ankburov/maven/spring-balancing-datasource/_latestVersion)
+[ ![CircleCI](https://circleci.com/gh/AnkBurov/spring-balancing-datasource/tree/master.svg?style=shield) ](https://circleci.com/gh/AnkBurov/spring-balancing-datasource/tree/master)  
 
 Redundant abstraction over multiple datasources. 
 Gives functionality like MariaDB's`jdbc:mysql:replication//.....` 
@@ -16,7 +17,6 @@ should be used.
 
 ## Download
 ### Gradle
-#### Bintray
 ```groovy
 repositories {
     jcenter()
@@ -24,17 +24,6 @@ repositories {
 
 dependencies {
     compile "io.ankburov:spring-balancing-datasource:<version>"
-}
-```
-
-#### JitPack
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-    compile "com.github.AnkBurov:spring-balancing-datasource:<version>"
 }
 ```
 

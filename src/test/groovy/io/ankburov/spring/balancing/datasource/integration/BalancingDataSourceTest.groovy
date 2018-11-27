@@ -1,5 +1,6 @@
 package io.ankburov.spring.balancing.datasource.integration
 
+import com.github.dockerjava.api.DockerClient
 import groovy.sql.Sql
 import groovy.transform.CompileStatic
 import io.ankburov.spring.balancing.datasource.BalancingDataSource
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.function.Executable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.JdbcDatabaseContainer
 
 import static org.junit.jupiter.api.Assertions.assertEquals
@@ -24,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TestConfiguration.class)
 class BalancingDataSourceTest {
+
+    private static final DockerClient DOCKER = DockerClientFactory.instance().client();
 
     private static final JdbcDatabaseContainer FIRST_MARIA = new MariaDelegate("first").init()
     private static final JdbcDatabaseContainer SECOND_MARIA = new MariaDelegate("second").init()
@@ -95,7 +99,7 @@ class BalancingDataSourceTest {
     private static void stopIfNotStopped(JdbcDatabaseContainer... containers) {
         containers.each { container ->
             if (container.isRunning()) {
-                container.stop()
+                DOCKER.stopContainerCmd(container.containerId).exec() // stop gracefully
             }
         }
     }

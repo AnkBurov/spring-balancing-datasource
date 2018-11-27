@@ -31,4 +31,14 @@ public class ignoreDataSourceByUrlStrategyTest {
 
         assertFalse(isIgnore);
     }
+
+    @Test
+    void testDoNotIgnoreNullUrl() {
+        ExtendedDataSourceProperties dataSourceProperties = new ExtendedDataSourceProperties();
+
+        IgnoreDataSourceStrategy ignoreDataSourceStrategy = new IgnoreDataSourceByUrlStrategy();
+        boolean isIgnore = ignoreDataSourceStrategy.ignore(dataSourceProperties);
+
+        assertFalse(isIgnore);
+    }
 }

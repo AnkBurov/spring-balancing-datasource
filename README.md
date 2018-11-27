@@ -14,20 +14,20 @@ By default each declared datasource is created as HikariCP datasource. If differ
 of the interface `io.ankburov.spring.balancing.datasource.factory.DataSourceFactory`
 should be used. 
 
-# Download
-## Gradle
-### Bintray
+## Download
+### Gradle
+#### Bintray
 ```groovy
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile "io.ankburov:spring-balancing-datasource<version>"
+    compile "io.ankburov:spring-balancing-datasource:<version>"
 }
 ```
 
-### JitPack
+#### JitPack
 ```groovy
 repositories {
     maven { url 'https://jitpack.io' }
@@ -38,7 +38,7 @@ dependencies {
 }
 ```
 
-# Usage
+## Usage
 
 Add `@EnableBalancingDataSource` annotation to your Spring boot configuration:
 ```java
@@ -69,3 +69,26 @@ spring:
 ```
 After that all JDBC connections from `dataSource` bean with an implementation as `BalancingDataSource` will be balanced across 
 defined datasources according to used `BalancingStrategy` - in failover manner or load-balancing one. 
+
+## Ignoring datasources
+
+Sometimes in strict deployment environments number of used properties is rigid (for example in Ansible's deployments
+where there is one or several playbooks and a number of different environments around them - some with one datasource, some with 
+many). To overcome this datasources can be ignored. It means that they will be ignored on an initialization of 
+`BalancingDataSource` and won't be created as `javax.sql.DataSource` instances. 
+
+To do that, url property of ignoring datasources should have value `IGNORE`:
+```yaml
+spring:
+    balancing-dataSources-config:
+        data-sources:
+            main_oracle:
+                url: jdbc:oracle:thin:@localhost:1521:xe
+                username: system
+                password: oracle
+                name: main_oracle
+            ignored_datasource:
+                url: IGNORE
+        data-sources-order: "main_oracle"
+```
+With such configuration only one instance of `javax.sql.DataSource` with the name `main_oracle` will be created

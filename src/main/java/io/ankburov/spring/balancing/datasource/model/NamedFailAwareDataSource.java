@@ -18,7 +18,7 @@ public class NamedFailAwareDataSource implements DataSource {
     @Delegate
     private final DataSource dataSource;
 
-    private LocalDateTime lastFailed = null;
+    private volatile LocalDateTime lastFailed = null;
 
     // race condition doesn't matter here - doesn't matter which thread will update the field by his version of LocalDateTime.now()
     public void setFailed() {

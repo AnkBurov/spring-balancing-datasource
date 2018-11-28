@@ -106,7 +106,7 @@ public class BalancingDataSourceProperties {
         }
 
         Map<String, ExtendedDataSourceProperties> orderedDataSources = new LinkedHashMap<>();
-        String dataSourceNotFound = "DataSource %s is not found among the datasource";
+        String dataSourceNotFound = "DataSource %s is not found among the datasources";
         Arrays.stream(splittedDataSourcesOrder).sequential()
                 .map(String::trim)
                 .forEachOrdered((String dataSourceName) -> {

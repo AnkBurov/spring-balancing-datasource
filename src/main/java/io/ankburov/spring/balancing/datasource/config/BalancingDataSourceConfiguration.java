@@ -2,6 +2,7 @@ package io.ankburov.spring.balancing.datasource.config;
 
 import io.ankburov.spring.balancing.datasource.BalancingDataSource;
 import io.ankburov.spring.balancing.datasource.balancingtype.BalancingStrategy;
+import io.ankburov.spring.balancing.datasource.balancingtype.MostHealthyFirstBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.RandomBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.FailOverBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.factory.DataSourceFactory;
@@ -36,7 +37,7 @@ public class BalancingDataSourceConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "type", havingValue = "FAILOVER", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "type", havingValue = "FAILOVER")
     public BalancingStrategy failoverBalancingStrategy() {
         return new FailOverBalancingStrategy();
     }
@@ -50,14 +51,21 @@ public class BalancingDataSourceConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ALL")
+    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "type", havingValue = "MOST_HEALTHY", matchIfMissing = true)
+    public BalancingStrategy mostHealthyFirstBalancingStrategy() {
+        return new MostHealthyFirstBalancingStrategy();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ALL", matchIfMissing = true)
     public FilteringStrategy useAllFilteringStrategy() {
         return new UseAllFilteringStrategy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ONLY_WORKING", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "spring.balancing-config.filtering", value = "type", havingValue = "ONLY_WORKING")
     public FilteringStrategy onlyWorkingFilteringStrategy(BalancingDataSourceProperties properties) {
         return new OnlyWorkingFilteringStrategy(properties.getFiltering().getTimeThreshold());
     }

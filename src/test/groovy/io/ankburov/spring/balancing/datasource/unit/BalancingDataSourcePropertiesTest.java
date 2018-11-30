@@ -33,18 +33,6 @@ public class BalancingDataSourcePropertiesTest {
     }
 
     @Test
-    void testEmptyOrder() {
-        assertThrows(IllegalStateException.class, () -> {
-            BalancingDataSourceProperties properties = new BalancingDataSourceProperties();
-            properties.setDatasources(new LinkedHashMap<>());
-            properties.getDatasources().put("second", new ExtendedDataSourceProperties());
-            properties.getDatasources().put("first", new ExtendedDataSourceProperties());
-
-            properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
-        });
-    }
-
-    @Test
     void testOrderIllegalSize() {
         assertThrows(IllegalStateException.class, () -> {
             BalancingDataSourceProperties properties = new BalancingDataSourceProperties();
@@ -86,7 +74,24 @@ public class BalancingDataSourcePropertiesTest {
         properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
 
         val iterator = properties.getDatasources().keySet().iterator();
-        properties.getDatasources().entrySet();
+        assertEquals("first", iterator.next());
+        assertEquals("second", iterator.next());
+        assertEquals("ignore_datasource", iterator.next());
+    }
+
+    @Test
+    void testNotSpecifiedDefaultDataSourceOrder() {
+        BalancingDataSourceProperties properties = new BalancingDataSourceProperties();
+        properties.setDatasources(new LinkedHashMap<>());
+        properties.getDatasources().put("second", new ExtendedDataSourceProperties());
+        properties.getDatasources().put("first", new ExtendedDataSourceProperties());
+        ExtendedDataSourceProperties ignoreDataSourceProperties = new ExtendedDataSourceProperties();
+        ignoreDataSourceProperties.setUrl("IGNORE");
+        properties.getDatasources().put("ignore_datasource", ignoreDataSourceProperties);
+
+        properties.makeSureDataSourceOrder(IGNORE_STRATEGY);
+
+        val iterator = properties.getDatasources().keySet().iterator();
         assertEquals("first", iterator.next());
         assertEquals("second", iterator.next());
         assertEquals("ignore_datasource", iterator.next());

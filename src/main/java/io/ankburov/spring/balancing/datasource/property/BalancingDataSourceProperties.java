@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -95,10 +96,13 @@ public class BalancingDataSourceProperties {
      * Make sure that the datasource order is desirable
      */
     public void makeSureDataSourceOrder(IgnoreDataSourceStrategy ignoreDataSourceStrategy) {
-        if (StringUtils.isEmpty(order)) {
-            throw new IllegalStateException("Property dataSourceOrder cannot be empty");
-        }
         val notIgnoredDataSources = ignoreDataSourceStrategy.filterNotIgnored(datasources);
+
+        if (StringUtils.isEmpty(order)) { // By default the order of the declared not ignored datasources
+            order = notIgnoredDataSources.entrySet().stream().sequential()
+                                         .map(Map.Entry::getKey)
+                                         .collect(Collectors.joining(orderSeparator));
+        }
 
         String[] splittedDataSourcesOrder = order.split(orderSeparator);
         if (splittedDataSourcesOrder.length != notIgnoredDataSources.size()) {

@@ -54,7 +54,6 @@ spring:
                 username: system
                 password: oracle
                 name: jdbc-adapter-local-test
-        order: "main_oracle,standby_oracle"
 ```
 After that all JDBC connections from `dataSource` bean with an implementation as `BalancingDataSource` will be balanced across 
 defined datasources according to used `BalancingStrategy` - in failover manner or load-balancing one. 
@@ -78,6 +77,5 @@ spring:
                 name: main_oracle
             ignored_datasource:
                 url: IGNORE
-        order: "main_oracle"
 ```
 With such configuration only one instance of `javax.sql.DataSource` with the name `main_oracle` will be created

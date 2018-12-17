@@ -21,7 +21,7 @@ public class OnlyWorkingFilteringStrategy implements FilteringStrategy {
         val filteredDataSources = dataSources.stream()
                                              .filter(dataSource -> dataSource.hasFailedOldEnoughOrOk(timeThreshold))
                                              .collect(Collectors.toList());
-        if (filteredDataSources.isEmpty()) { // if all datasources has failed, then return initial datasources and pray for the best
+        if (filteredDataSources.isEmpty()) { // if all datasources have failed, then return initial datasources and pray for the best
             return dataSources;
         }
         return filteredDataSources;

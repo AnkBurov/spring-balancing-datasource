@@ -11,6 +11,8 @@ import java.util.Properties;
 @Slf4j
 public class HikariDataSourceFactory implements DataSourceFactory {
 
+    private static final String IGNORE = "IGNORE";
+
     @Override
     public DataSource create(ExtendedDataSourceProperties dataSourceProperties) {
         Properties properties = new Properties();
@@ -31,7 +33,12 @@ public class HikariDataSourceFactory implements DataSourceFactory {
             properties.put("initializationFailTimeout", 0);
         }
 
-        dataSourceProperties.getAdditionalProperties().forEach(properties::put);
+        // add additional properties if their values are not ignored
+        dataSourceProperties.getAdditionalProperties().forEach((key, value) -> {
+            if (!IGNORE.equalsIgnoreCase(value)) {
+                properties.put(key, value);
+            }
+        });
         log.info("Datasource properties are {}", properties.toString());
 
         HikariConfig hikariConfig = new HikariConfig(properties);

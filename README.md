@@ -79,3 +79,5 @@ spring:
                 url: IGNORE
 ```
 With such configuration only one instance of `javax.sql.DataSource` with the name `main_oracle` will be created
+
+Additional properties can also be ignored. Additional property is ignored when its value is set to `IGNORE`

@@ -39,6 +39,22 @@ public class HikariDataSourceFactoryTest {
         HikariDataSource dataSource = (HikariDataSource) dataSourceFactory.create(dataSourceProperties);
 
         assertEquals(dataSourceProperties.getUrl(), dataSource.getJdbcUrl());
-        assertNull(dataSourceProperties.getSchema());
+        assertNull(dataSource.getSchema());
+    }
+
+    @Test
+    void testNullValueInAdditionalProperties() {
+        ExtendedDataSourceProperties dataSourceProperties = new ExtendedDataSourceProperties();
+        dataSourceProperties.setUrl("jdbc:mariadb://localhost:3306");
+        dataSourceProperties.setUsername("some");
+        dataSourceProperties.setPassword("some");
+
+        dataSourceProperties.getAdditionalProperties().put("schema", null);
+
+        HikariDataSourceFactory dataSourceFactory = new HikariDataSourceFactory();
+        HikariDataSource dataSource = (HikariDataSource) dataSourceFactory.create(dataSourceProperties);
+
+        assertEquals(dataSourceProperties.getUrl(), dataSource.getJdbcUrl());
+        assertNull(dataSource.getSchema());
     }
 }

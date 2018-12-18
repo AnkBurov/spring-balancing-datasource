@@ -19,9 +19,16 @@ public class HikariDataSourceFactory implements DataSourceFactory {
         if (dataSourceProperties.getUrl() != null) {
             properties.put("jdbcUrl", dataSourceProperties.determineUrl()); // NPE-dangerous method
         }
-        properties.put("username", dataSourceProperties.determineUsername());
-        properties.put("password", dataSourceProperties.determinePassword());
-        properties.put("poolName", dataSourceProperties.getName());
+
+        if (dataSourceProperties.determineUsername() != null) {
+            properties.put("username", dataSourceProperties.determineUsername());
+        }
+        if (dataSourceProperties.determinePassword() != null) {
+            properties.put("password", dataSourceProperties.determinePassword());
+        }
+        if (dataSourceProperties.getName() != null) {
+            properties.put("poolName", dataSourceProperties.getName());
+        }
 
         // to avoid default long connection timeout of Hikari
         if (!dataSourceProperties.getAdditionalProperties().containsKey("connectionTimeout")) {
@@ -35,7 +42,7 @@ public class HikariDataSourceFactory implements DataSourceFactory {
 
         // add additional properties if their values are not ignored
         dataSourceProperties.getAdditionalProperties().forEach((key, value) -> {
-            if (!IGNORE.equalsIgnoreCase(value)) {
+            if (value != null && !IGNORE.equalsIgnoreCase(value)) {
                 properties.put(key, value);
             }
         });

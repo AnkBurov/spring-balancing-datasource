@@ -17,7 +17,7 @@ apply plugin: 'com.jfrog.bintray'
 
 
 group 'io.ankburov'
-version '1.0.8'
+version '1.0.9'
 
 sourceCompatibility = 1.8
 

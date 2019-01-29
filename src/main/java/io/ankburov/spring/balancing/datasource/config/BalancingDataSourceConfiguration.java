@@ -2,9 +2,9 @@ package io.ankburov.spring.balancing.datasource.config;
 
 import io.ankburov.spring.balancing.datasource.BalancingDataSource;
 import io.ankburov.spring.balancing.datasource.balancingtype.BalancingStrategy;
+import io.ankburov.spring.balancing.datasource.balancingtype.FailOverBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.MostHealthyFirstBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.balancingtype.RandomBalancingStrategy;
-import io.ankburov.spring.balancing.datasource.balancingtype.FailOverBalancingStrategy;
 import io.ankburov.spring.balancing.datasource.factory.DataSourceFactory;
 import io.ankburov.spring.balancing.datasource.factory.HikariDataSourceFactory;
 import io.ankburov.spring.balancing.datasource.failed.AlwaysUpdateFailedDataSourceStrategy;
@@ -16,6 +16,7 @@ import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceByUrlStrat
 import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.log.FailedDataSourceLogStrategy;
 import io.ankburov.spring.balancing.datasource.log.TimedFailedDataSourceLogStrategy;
+import io.ankburov.spring.balancing.datasource.metadata.BalancingDataSourcePublicMetrics;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -74,6 +75,12 @@ public class BalancingDataSourceConfiguration {
     @ConditionalOnMissingBean
     public FailedDataSourceLogStrategy timedFailedDataSourceLogStrategy(BalancingDataSourceProperties properties) {
         return new TimedFailedDataSourceLogStrategy(properties.getLogging().getTimeThreshold());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BalancingDataSourcePublicMetrics balancingDataSourcePublicMetrics(BalancingDataSource balancingDataSource) {
+        return new BalancingDataSourcePublicMetrics(balancingDataSource);
     }
 
     @Bean

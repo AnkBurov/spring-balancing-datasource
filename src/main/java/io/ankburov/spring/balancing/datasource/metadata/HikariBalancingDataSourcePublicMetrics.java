@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
  * @author arxmim
  * created 2019-01-28
  */
-public class BalancingDataSourcePublicMetrics extends DataSourcePublicMetrics {
+public class HikariBalancingDataSourcePublicMetrics extends DataSourcePublicMetrics {
 
     @Getter
     private DataSourcePublicMetrics dataSourcePublicMetrics = new DataSourcePublicMetrics();
 
     private final BalancingDataSource balancingDataSource;
 
-    public BalancingDataSourcePublicMetrics(BalancingDataSource balancingDataSource) {
+    public HikariBalancingDataSourcePublicMetrics(BalancingDataSource balancingDataSource) {
         this.balancingDataSource = balancingDataSource;
     }
 
@@ -52,6 +52,7 @@ public class BalancingDataSourcePublicMetrics extends DataSourcePublicMetrics {
     private Pair<String, HikariDataSourcePoolMetadata> splitToNameAndPoolMetadata(NamedFailAwareDataSource namedFailAwareDataSource) {
         HikariDataSourcePoolMetadata poolMetadata = Optional.of(namedFailAwareDataSource)
                                                             .map(NamedFailAwareDataSource::getDataSource)
+                                                            .filter(dataSource -> dataSource instanceof HikariDataSource)
                                                             .map(HikariDataSource.class::cast)
                                                             .map(HikariDataSourcePoolMetadata::new)
                                                             .orElseThrow(IllegalStateException::new);

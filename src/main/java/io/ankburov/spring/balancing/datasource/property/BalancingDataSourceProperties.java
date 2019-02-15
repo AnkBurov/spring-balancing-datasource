@@ -2,6 +2,7 @@ package io.ankburov.spring.balancing.datasource.property;
 
 import io.ankburov.spring.balancing.datasource.ignore.IgnoreDataSourceStrategy;
 import io.ankburov.spring.balancing.datasource.model.BalancingType;
+import io.ankburov.spring.balancing.datasource.model.ConnectionPoolType;
 import io.ankburov.spring.balancing.datasource.model.FilteringType;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,8 @@ public class BalancingDataSourceProperties {
      * Map of balancing datasources
      */
     private Map<String, ExtendedDataSourceProperties> datasources;
+
+    private ConnectionPoolType connectionPoolType;
 
     /**
      * Order of datasources names (map keys) splitted by a separator

@@ -19,6 +19,7 @@ import io.ankburov.spring.balancing.datasource.log.TimedFailedDataSourceLogStrat
 import io.ankburov.spring.balancing.datasource.metadata.HikariBalancingDataSourcePublicMetrics;
 import io.ankburov.spring.balancing.datasource.property.BalancingDataSourceProperties;
 import org.springframework.boot.actuate.endpoint.DataSourcePublicMetrics;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -104,7 +105,7 @@ public class BalancingDataSourceConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "spring.balancing-config.balancing", value = "enableMetricsForDB", havingValue = "hikari")
+    @ConditionalOnExpression("'${spring.balancing-config.connectionPoolType}' == 'hikari' && !${spring.balancing-config.balancing.overrideBalancingDataSource:false}")
     public DataSourcePublicMetrics hikariBalancingDataSourcePublicMetrics(BalancingDataSource balancingDataSource) {
         return new HikariBalancingDataSourcePublicMetrics(balancingDataSource);
     }

@@ -3,8 +3,9 @@ package io.ankburov.spring.balancing.datasource.metadata;
 import com.zaxxer.hikari.HikariDataSource;
 import io.ankburov.spring.balancing.datasource.BalancingDataSource;
 import io.ankburov.spring.balancing.datasource.model.NamedFailAwareDataSource;
-import javafx.util.Pair;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.boot.actuate.endpoint.DataSourcePublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.autoconfigure.jdbc.metadata.HikariDataSourcePoolMetadata;
@@ -56,7 +57,7 @@ public class HikariBalancingDataSourcePublicMetrics extends DataSourcePublicMetr
                                                             .map(HikariDataSource.class::cast)
                                                             .map(HikariDataSourcePoolMetadata::new)
                                                             .orElseThrow(IllegalStateException::new);
-        return new Pair<>(namedFailAwareDataSource.getName(), poolMetadata);
+        return new ImmutablePair<>(namedFailAwareDataSource.getName(), poolMetadata);
     }
 
     private Collection<Metric<?>> getMetricsFromDataSourcePoolMetadata(Pair<String, HikariDataSourcePoolMetadata> hikariDataSourcePair) {

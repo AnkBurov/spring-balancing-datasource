@@ -32,7 +32,8 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-jdbc:1.5.17.RELEASE",
             "org.springframework.boot:spring-boot-actuator:1.5.17.RELEASE",
-            "com.zaxxer:HikariCP:3.2.0"
+            "com.zaxxer:HikariCP:3.2.0",
+            "org.apache.commons:commons-lang3:3.8"
 
     testCompile "org.projectlombok:lombok:1.18.4",
                 "org.springframework.boot:spring-boot-starter-test:1.5.17.RELEASE",

@@ -15,7 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @CompileStatic
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = TestConfiguration.class, properties = ["spring.balancing-config.balancing.overrideBalancingDataSource=true"])
+@SpringBootTest(classes = TestConfiguration.class, properties = ["spring.balancing-config.balancing.overrideBalancingDataSource=true",
+        "spring.balancing-config.connectionPoolType=hikari"])
 class DisabledBalancingDataSourceTest {
 
     @Autowired
